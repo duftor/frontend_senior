@@ -10,15 +10,16 @@ export default function Event({ id, start, duration }) {
 	console.log(percentageHeight)
 	return (
 		<EventStyled height={percentageHeight}>
-			<Typo>Id : {id}</Typo>
-			<Typo>Start at {start}</Typo>
-			<Typo>Last for {duration} minutes</Typo>
+			<Typo variant="body1">Id : {id}</Typo>
 		</EventStyled>
 	)
 }
 
 const EventStyled = styled.div`
-	background: #f7f7f7;
+	background: #d5f8ef;
+	border: 1px solid #13b789;
+
+	color: #13b789;
 
 	width: 100%;
 	height: ${({ height }) => height + "%"};
