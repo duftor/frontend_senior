@@ -27,6 +27,20 @@ const sortIntervalsByStart = (intervals) => {
 	return intervals.slice().sort(({ start: s1 }, { start: s2 }) => s1 - s2)
 }
 
+// Split intervals into groups, which are independent of each other
+const groupIntervals = (intervals) => {
+	const groups = []
+	let latestIntervalEnd = -Infinity
+	for (const { start, end } of sortIntervalsByStart(intervals)) {
+		if (start >= latestIntervalEnd) groups.push([]) // There is no interval to previous intervals so create new group
+
+		groups[groups.length - 1].push(intervals)
+		latestIntervalEnd = Math.max(latestIntervalEnd, end)
+	}
+
+	return groups
+}
+
 function App() {
 	const [events, setEvents] = useState(data)
 	const intervals = []
@@ -34,7 +48,7 @@ function App() {
 	// Converts all events into interval
 	events.forEach((e) => intervals.push(convertEventIntoInterval(e)))
 
-	console.log(sortIntervalsByStart(intervals))
+	console.log(groupIntervals(intervals))
 
 	return (
 		<AppStyled>
