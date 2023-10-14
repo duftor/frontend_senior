@@ -5,27 +5,36 @@ import data from "./data/input.json"
 import { useState } from "react"
 import { timeStringToDecimal } from "./utils/time"
 
+// Convert {start, duration} to {start, end}
 const convertEventIntoInterval = (event) => {
 	const start = timeStringToDecimal(event.start)
 	return {
+		id: event.id,
 		start,
 		end: start + event.duration / 60,
 	}
 }
 
+// Check if interval1 and interval2 overlaps
 const isOverlapping = (interval1, interval2) => {
 	const start = Math.max(interval1.start, interval2.start)
 	const end = Math.min(interval1.end, interval2.end)
 	return start < end
 }
 
+// Sorts by start ascending
+const sortIntervalsByStart = (intervals) => {
+	return intervals.slice().sort(({ start: s1 }, { start: s2 }) => s1 - s2)
+}
+
 function App() {
 	const [events, setEvents] = useState(data)
+	const intervals = []
 
-	const e1 = convertEventIntoInterval(events[15])
-	const e2 = convertEventIntoInterval(events[13])
+	// Converts all events into interval
+	events.forEach((e) => intervals.push(convertEventIntoInterval(e)))
 
-	console.log(isOverlapping(e1, e2))
+	console.log(sortIntervalsByStart(intervals))
 
 	return (
 		<AppStyled>
