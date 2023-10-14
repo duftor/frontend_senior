@@ -3,7 +3,7 @@ import styled from "styled-components"
 import Typo from "./reusable-ui/Typo"
 import { timeStringToDecimal } from "../utils/time"
 
-export default function Event({ id, start, duration }) {
+export default function Event({ id, start, duration, width = 100, left = 0 }) {
 	const startTime = 9
 	const endTime = 21
 	const timeScale = endTime - startTime
@@ -14,10 +14,13 @@ export default function Event({ id, start, duration }) {
 	const percentageTop =
 		((timeStringToDecimal(start) - startTime) / (endTime - startTime)) * 100
 
-	console.log(percentageTop)
-
 	return (
-		<EventStyled height={percentageHeight} top={percentageTop}>
+		<EventStyled
+			height={percentageHeight}
+			top={percentageTop}
+			width={width}
+			left={left}
+		>
 			<Typo variant="body1">Id : {id}</Typo>
 		</EventStyled>
 	)
@@ -25,15 +28,16 @@ export default function Event({ id, start, duration }) {
 
 const EventStyled = styled.div`
 	box-sizing: border-box;
-	position: relative;
+	position: absolute;
 	top: ${({ top }) => top + "%"};
+	left: ${({ left }) => left + "%"};
 	background: #d5f8ef;
 	border: 1px solid #13b789;
 
 	color: #13b789;
 
-	width: 100%;
 	height: ${({ height }) => height + "%"};
+	width: ${({ width }) => width + "%"};
 	border-radius: 4px;
 
 	display: flex;
