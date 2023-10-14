@@ -60,13 +60,6 @@ const convertEventIntoInterval = (event) => {
 	}
 }
 
-// Check if interval1 and interval2 overlaps
-const isOverlapping = (interval1, interval2) => {
-	const start = Math.max(interval1.start, interval2.start)
-	const end = Math.min(interval1.end, interval2.end)
-	return start < end
-}
-
 // Sorts by start ascending
 const sortIntervalsByStart = (intervals) => {
 	return intervals.slice().sort(({ start: s1 }, { start: s2 }) => s1 - s2)
@@ -88,28 +81,6 @@ const groupIntervals = (intervals) => {
 	return groups
 }
 
-// Fill columns with equal width from left to right
-const putIntervalsIntoColumns = (intervals) => {
-	const columns = []
-	for (const interval of intervals) {
-		let columnIndex = findFreeColumn(interval)
-		columns[columnIndex] = (columns[columnIndex] || []).concat([interval])
-	}
-	return columns
-
-	function findFreeColumn(interval) {
-		let columnIndex = 0
-		while (
-			columns?.[columnIndex]?.some((otherInterval) =>
-				isOverlapping(interval, otherInterval)
-			)
-		) {
-			columnIndex++
-		}
-		return columnIndex
-	}
-}
-
 function App() {
 	const [events, setEvents] = useState(data)
 	const intervals = []
@@ -118,15 +89,11 @@ function App() {
 	events.forEach((e) => intervals.push(convertEventIntoInterval(e)))
 
 	const groups = groupIntervals(intervals)
-	// console.log(groups)
-
-	const columns = putIntervalsIntoColumns(intervals)
 
 	return (
 		<AppStyled>
 			{/* <Calendar /> */}
 			{groups.map((events, groupIndex) => {
-				// console.log("Group : " + groupIndex, putIntervalsIntoColumns(events))
 				return (
 					<GroupEvents
 						key={groupIndex}

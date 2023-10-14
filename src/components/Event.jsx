@@ -5,27 +5,18 @@ import { timeStringToDecimal } from "../utils/time"
 
 export default function Event({
 	id,
-	start,
-	end,
-	width = 100,
+	top = 0,
 	left = 0,
+	width = 100,
+	height = 100,
 	colors = { light: "#d5f8ef", dark: "#13b789" },
 }) {
-	const startTime = 9
-	const endTime = 21
-	const timeScale = endTime - startTime
-
-	const percentPerHour = 100 / timeScale
-	const percentageHeight = percentPerHour * (end - start)
-
-	const percentageTop = ((start - startTime) / (endTime - startTime)) * 100
-
 	return (
 		<EventStyled
-			height={percentageHeight}
-			top={percentageTop}
-			width={width}
+			top={top}
 			left={left}
+			height={height}
+			width={width}
 			colors={colors}
 		>
 			<Typo variant="body1">Id : {id}</Typo>
