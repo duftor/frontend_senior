@@ -4,6 +4,7 @@ import Event from "./components/Event"
 import data from "./data/input.json"
 import { useState } from "react"
 import { timeStringToDecimal } from "./utils/time"
+import GroupEvents from "./components/GroupEvents"
 
 // Colors for groups
 const colors = [
@@ -124,19 +125,15 @@ function App() {
 	return (
 		<AppStyled>
 			{/* <Calendar /> */}
-			{groups.map((group, groupIndex) => {
-				console.log("Group : " + groupIndex, putIntervalsIntoColumns(group))
-				return group.map(({ id, end, start }) => (
-					<Event
-						key={id}
-						id={id}
-						end={end}
-						start={start}
-						colors={colors[groupIndex % 10]}
-						// width={eventWidths[id]}
-						// left={eventLeftValues[id]}
+			{groups.map((events, groupIndex) => {
+				// console.log("Group : " + groupIndex, putIntervalsIntoColumns(events))
+				return (
+					<GroupEvents
+						key={groupIndex}
+						events={events}
+						groupColors={colors[groupIndex % 10]}
 					/>
-				))
+				)
 			})}
 		</AppStyled>
 	)
