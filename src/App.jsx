@@ -5,44 +5,7 @@ import data from "./data/input.json"
 import { useState } from "react"
 import { timeStringToDecimal } from "./utils/time"
 
-// Convert {start, duration} to {start, end}
-const convertEventIntoInterval = (event) => {
-	const start = timeStringToDecimal(event.start)
-	return {
-		id: event.id,
-		start,
-		end: start + event.duration / 60,
-	}
-}
-
-// Check if interval1 and interval2 overlaps
-const isOverlapping = (interval1, interval2) => {
-	const start = Math.max(interval1.start, interval2.start)
-	const end = Math.min(interval1.end, interval2.end)
-	return start < end
-}
-
-// Sorts by start ascending
-const sortIntervalsByStart = (intervals) => {
-	return intervals.slice().sort(({ start: s1 }, { start: s2 }) => s1 - s2)
-}
-
-// Split intervals into groups, which are independent of each other
-const groupIntervals = (intervals) => {
-	const groups = []
-	let latestIntervalEnd = -Infinity
-	for (const interval of sortIntervalsByStart(intervals)) {
-		const { start, end } = interval
-		// There is no overlap to previous intervals so create a new group
-		if (start >= latestIntervalEnd) {
-			groups.push([])
-		}
-		groups[groups.length - 1].push(interval)
-		latestIntervalEnd = Math.max(latestIntervalEnd, end)
-	}
-	return groups
-}
-
+// Colors for groups
 const colors = [
 	{
 		light: "#fbf8cc",
@@ -86,6 +49,66 @@ const colors = [
 	},
 ]
 
+// Convert {start, duration} to {start, end}
+const convertEventIntoInterval = (event) => {
+	const start = timeStringToDecimal(event.start)
+	return {
+		id: event.id,
+		start,
+		end: start + event.duration / 60,
+	}
+}
+
+// Check if interval1 and interval2 overlaps
+const isOverlapping = (interval1, interval2) => {
+	const start = Math.max(interval1.start, interval2.start)
+	const end = Math.min(interval1.end, interval2.end)
+	return start < end
+}
+
+// Sorts by start ascending
+const sortIntervalsByStart = (intervals) => {
+	return intervals.slice().sort(({ start: s1 }, { start: s2 }) => s1 - s2)
+}
+
+// Split intervals into groups, which are independent of each other
+const groupIntervals = (intervals) => {
+	const groups = []
+	let latestIntervalEnd = -Infinity
+	for (const interval of sortIntervalsByStart(intervals)) {
+		const { start, end } = interval
+		// There is no overlap to previous intervals so create a new group
+		if (start >= latestIntervalEnd) {
+			groups.push([])
+		}
+		groups[groups.length - 1].push(interval)
+		latestIntervalEnd = Math.max(latestIntervalEnd, end)
+	}
+	return groups
+}
+
+// Fill columns with equal width from left to right
+const putIntervalsIntoColumns = (intervals) => {
+	const columns = []
+	for (const interval of intervals) {
+		let columnIndex = findFreeColumn(interval)
+		columns[columnIndex] = (columns[columnIndex] || []).concat([interval])
+	}
+	return columns
+
+	function findFreeColumn(interval) {
+		let columnIndex = 0
+		while (
+			columns?.[columnIndex]?.some((otherInterval) =>
+				isOverlapping(interval, otherInterval)
+			)
+		) {
+			columnIndex++
+		}
+		return columnIndex
+	}
+}
+
 function App() {
 	const [events, setEvents] = useState(data)
 	const intervals = []
@@ -96,10 +119,13 @@ function App() {
 	const groups = groupIntervals(intervals)
 	// console.log(groups)
 
+	const columns = putIntervalsIntoColumns(intervals)
+
 	return (
 		<AppStyled>
 			{/* <Calendar /> */}
 			{groups.map((group, groupIndex) => {
+				console.log("Group : " + groupIndex, putIntervalsIntoColumns(group))
 				return group.map(({ id, end, start }) => (
 					<Event
 						key={id}
