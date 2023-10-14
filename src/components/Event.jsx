@@ -3,16 +3,22 @@ import styled from "styled-components"
 import Typo from "./reusable-ui/Typo"
 import { timeStringToDecimal } from "../utils/time"
 
-export default function Event({ id, start, duration, width = 100, left = 0 }) {
+export default function Event({
+	id,
+	start,
+	end,
+	width = 100,
+	left = 0,
+	colors = { light: "#d5f8ef", dark: "#13b789" },
+}) {
 	const startTime = 9
 	const endTime = 21
 	const timeScale = endTime - startTime
 
 	const percentPerHour = 100 / timeScale
-	const percentageHeight = percentPerHour * (duration / 60)
+	const percentageHeight = percentPerHour * (end - start)
 
-	const percentageTop =
-		((timeStringToDecimal(start) - startTime) / (endTime - startTime)) * 100
+	const percentageTop = ((start - startTime) / (endTime - startTime)) * 100
 
 	return (
 		<EventStyled
@@ -20,6 +26,7 @@ export default function Event({ id, start, duration, width = 100, left = 0 }) {
 			top={percentageTop}
 			width={width}
 			left={left}
+			colors={colors}
 		>
 			<Typo variant="body1">Id : {id}</Typo>
 		</EventStyled>
@@ -31,10 +38,10 @@ const EventStyled = styled.div`
 	position: absolute;
 	top: ${({ top }) => top + "%"};
 	left: ${({ left }) => left + "%"};
-	background: #d5f8ef;
-	border: 1px solid #13b789;
+	background: ${({ colors }) => colors.light};
+	border: 1px solid ${({ colors }) => colors.dark};
 
-	color: #13b789;
+	color: ${({ colors }) => colors.dark};
 
 	height: ${({ height }) => height + "%"};
 	width: ${({ width }) => width + "%"};
