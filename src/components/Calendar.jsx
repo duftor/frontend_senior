@@ -6,7 +6,7 @@ import { useState } from "react"
 import data from "../data/input.json"
 import EventsContainer from "./EventsContainer"
 
-export default function Calendar() {
+export default function Calendar({ is24HourFormat = true }) {
 	const [events, setEvents] = useState(data)
 	const hours = generateHours(9, 21)
 
@@ -19,11 +19,18 @@ export default function Calendar() {
 				<div className="time-scale">
 					{hours.map((hour) => (
 						<div key={hour} className="hour">
-							{decimalToTime(hour % 12)} {hour < 12 ? "am" : "pm"}
+							{is24HourFormat
+								? `${decimalToTime(hour)}`
+								: `${decimalToTime(hour % 12)} ${hour < 12 ? "am" : "pm"}`}
 						</div>
 					))}
 				</div>
-				<div className="days-container"></div>
+				<div className="days-container">
+					<div className="day">
+						<div className="day-header"></div>
+						<div className="day-content"></div>
+					</div>
+				</div>
 			</div>
 
 			{/* <div className="container">
@@ -84,12 +91,12 @@ const CalendarStyled = styled.div`
 	}
 
 	.container {
-		border: 1px solid red;
+		/* border: 1px solid red; */
 		height: 100%;
 		display: flex;
+		padding: 12px;
 
 		.time-scale {
-			border: 1px solid blue;
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
@@ -101,7 +108,7 @@ const CalendarStyled = styled.div`
 			}
 		}
 		.days-container {
-			background: lightcoral;
+			border: 1px solid blue;
 			flex: 1;
 		}
 	}
