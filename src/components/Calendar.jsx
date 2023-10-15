@@ -7,18 +7,28 @@ import data from "../data/input.json"
 import EventsContainer from "./EventsContainer"
 import { generateEvents } from "../utils/intervals"
 
+const daysFR = [
+	"Lundi",
+	"Mardi",
+	"Mercredi",
+	"Jeudi",
+	"Vendredi",
+	"Samedi",
+	"Dimanche",
+]
+
 export default function Calendar({ is24HourFormat = true }) {
 	const [events, setEvents] = useState(data)
 	const containingInterval = { start: 9, end: 21 }
 	const hours = generateHours(containingInterval.start, containingInterval.end)
 
 	const eventsProperties = {
-		count: 17, // Nombre d'intervals à générer
-		maxStart: 9, // Heure maximale de début (24 heures)
-		maxEnd: 21, // Heure maximale de fin (24 heures)
-		minLength: 15, // Durée minimale de l'intervalle (en minutes)
-		maxLength: 120, // Durée maximale de l'intervalle (en minutes)
-		segments: 4, // Nombre de segments pour la précision
+		count: 17, // Intervals to generate
+		maxStart: 9, // Start hour
+		maxEnd: 21, // End hour
+		minLength: 15, // Interval min length (minutes)
+		maxLength: 120, // Interval max length (minutes)
+		segments: 4, // Hour divider for events' hour
 	}
 
 	return (
@@ -28,27 +38,11 @@ export default function Calendar({ is24HourFormat = true }) {
 			</Typo>
 			<div className="container">
 				<div className="days-header">
-					<div className="day-header">
-						<Typo variant="h6">Lundi</Typo>
-					</div>
-					<div className="day-header">
-						<Typo variant="h6">Mardi</Typo>
-					</div>
-					<div className="day-header">
-						<Typo variant="h6">Mercredi</Typo>
-					</div>
-					<div className="day-header">
-						<Typo variant="h6">Jeudi</Typo>
-					</div>
-					<div className="day-header">
-						<Typo variant="h6">Vendredi</Typo>
-					</div>
-					<div className="day-header">
-						<Typo variant="h6">Samedi</Typo>
-					</div>
-					<div className="day-header">
-						<Typo variant="h6">Dimanche</Typo>
-					</div>
+					{daysFR.map((day) => (
+						<div key={day + "-header"} className="day-header">
+							<Typo variant="h6">{day}</Typo>
+						</div>
+					))}
 				</div>
 				<div className="calendar">
 					<div className="time-scale">
@@ -61,48 +55,18 @@ export default function Calendar({ is24HourFormat = true }) {
 						))}
 					</div>
 					<div className="calendar-days">
-						<div className="day-content">
-							<EventsContainer
-								events={events}
-								containingInterval={containingInterval}
-							/>
-						</div>
-						<div className="day-content">
-							<EventsContainer
-								events={generateEvents(eventsProperties)}
-								containingInterval={containingInterval}
-							/>
-						</div>
-						<div className="day-content">
-							<EventsContainer
-								events={generateEvents(eventsProperties)}
-								containingInterval={containingInterval}
-							/>
-						</div>
-						<div className="day-content">
-							<EventsContainer
-								events={generateEvents(eventsProperties)}
-								containingInterval={containingInterval}
-							/>
-						</div>
-						<div className="day-content">
-							<EventsContainer
-								events={generateEvents(eventsProperties)}
-								containingInterval={containingInterval}
-							/>
-						</div>
-						<div className="day-content">
-							<EventsContainer
-								events={generateEvents(eventsProperties)}
-								containingInterval={containingInterval}
-							/>
-						</div>
-						<div className="day-content">
-							<EventsContainer
-								events={generateEvents(eventsProperties)}
-								containingInterval={containingInterval}
-							/>
-						</div>
+						{daysFR.map((day) => (
+							<div key={day + "-content"} className="day-content">
+								<EventsContainer
+									events={
+										day === daysFR[0]
+											? events
+											: generateEvents(eventsProperties)
+									}
+									containingInterval={containingInterval}
+								/>
+							</div>
+						))}
 					</div>
 				</div>
 			</div>
