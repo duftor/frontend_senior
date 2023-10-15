@@ -6,10 +6,52 @@ import { useState } from "react"
 import data from "../data/input.json"
 import EventsContainer from "./EventsContainer"
 
+// Generate events for testing
+const generateEvents = ({
+	count,
+	maxStart,
+	maxEnd,
+	minLength,
+	maxLength,
+	segments,
+}) => {
+	const events = []
+
+	for (let i = 1; i <= count; i++) events.push({ id: i, ...randomEvent() })
+
+	return events
+
+	function randomEvent() {
+		const start = randomInt(maxStart * segments, maxEnd * segments) / segments
+		let duration = randomInt(minLength, maxLength, 15)
+
+		if (start + duration / 60 > maxEnd) duration = (maxEnd - start) * 60
+
+		return {
+			start: decimalToTime(start, ":"),
+			duration,
+		}
+	}
+
+	function randomInt(min, max, step = 1) {
+		const range = (max - min) / step
+		return Math.floor(Math.random() * range) * step + min
+	}
+}
+
 export default function Calendar({ is24HourFormat = true }) {
 	const [events, setEvents] = useState(data)
 	const containingInterval = { start: 9, end: 21 }
 	const hours = generateHours(containingInterval.start, containingInterval.end)
+
+	const eventsProperties = {
+		count: 17, // Nombre d'intervals à générer
+		maxStart: 9, // Heure maximale de début (24 heures)
+		maxEnd: 21, // Heure maximale de fin (24 heures)
+		minLength: 15, // Durée minimale de l'intervalle (en minutes)
+		maxLength: 120, // Durée maximale de l'intervalle (en minutes)
+		segments: 4, // Nombre de segments pour la précision
+	}
 
 	return (
 		<CalendarStyled>
@@ -59,37 +101,37 @@ export default function Calendar({ is24HourFormat = true }) {
 						</div>
 						<div className="day-content">
 							<EventsContainer
-								events={events}
+								events={generateEvents(eventsProperties)}
 								containingInterval={containingInterval}
 							/>
 						</div>
 						<div className="day-content">
 							<EventsContainer
-								events={events}
+								events={generateEvents(eventsProperties)}
 								containingInterval={containingInterval}
 							/>
 						</div>
 						<div className="day-content">
 							<EventsContainer
-								events={events}
+								events={generateEvents(eventsProperties)}
 								containingInterval={containingInterval}
 							/>
 						</div>
 						<div className="day-content">
 							<EventsContainer
-								events={events}
+								events={generateEvents(eventsProperties)}
 								containingInterval={containingInterval}
 							/>
 						</div>
 						<div className="day-content">
 							<EventsContainer
-								events={events}
+								events={generateEvents(eventsProperties)}
 								containingInterval={containingInterval}
 							/>
 						</div>
 						<div className="day-content">
 							<EventsContainer
-								events={events}
+								events={generateEvents(eventsProperties)}
 								containingInterval={containingInterval}
 							/>
 						</div>

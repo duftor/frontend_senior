@@ -19,7 +19,7 @@ export const generateHours = (startHour, endHour, step = 1) => {
 // Parameters:
 //   - decimalTime (Number): The decimal time to convert into hour and minutes.
 // Returns (String): A string representing the time in the "8h30" format.
-export const decimalToTime = (decimalTime) => {
+export const decimalToTime = (decimalTime, separator = "h") => {
 	let hours = Math.floor(decimalTime)
 	let minutes = Math.round((decimalTime - hours) * 60)
 
@@ -30,7 +30,9 @@ export const decimalToTime = (decimalTime) => {
 	}
 
 	// Format the time in the "8h30" format (add a leading zero for minutes < 10)
-	return `${hours === 0 ? 12 : hours}h${minutes < 10 ? "0" : ""}${minutes}`
+	return `${hours === 0 ? 12 : hours}${separator}${
+		minutes < 10 ? "0" : ""
+	}${minutes}`
 }
 
 // Function that converts a time string in the format "hh:mm" to a decimal time.
@@ -38,9 +40,9 @@ export const decimalToTime = (decimalTime) => {
 //   - timeString (String): The time string to convert.
 // Returns (Number or null): The decimal time if conversion is successful, or null if the time is invalid.
 
-export const timeStringToDecimal = (timeString) => {
+export const timeStringToDecimal = (timeString, separator = ":") => {
 	// Split the time string into hours and minutes, and convert them to numbers.
-	const [hours, minutes] = timeString.split(":").map(Number)
+	const [hours, minutes] = timeString.split(separator).map(Number)
 
 	// Check for invalid time values (hours and minutes).
 	if (
