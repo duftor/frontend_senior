@@ -5,39 +5,7 @@ import { decimalToTime, generateHours } from "../utils/time"
 import { useState } from "react"
 import data from "../data/input.json"
 import EventsContainer from "./EventsContainer"
-
-// Generate events for testing
-const generateEvents = ({
-	count,
-	maxStart,
-	maxEnd,
-	minLength,
-	maxLength,
-	segments,
-}) => {
-	const events = []
-
-	for (let i = 1; i <= count; i++) events.push({ id: i, ...randomEvent() })
-
-	return events
-
-	function randomEvent() {
-		const start = randomInt(maxStart * segments, maxEnd * segments) / segments
-		let duration = randomInt(minLength, maxLength, 15)
-
-		if (start + duration / 60 > maxEnd) duration = (maxEnd - start) * 60
-
-		return {
-			start: decimalToTime(start, ":"),
-			duration,
-		}
-	}
-
-	function randomInt(min, max, step = 1) {
-		const range = (max - min) / step
-		return Math.floor(Math.random() * range) * step + min
-	}
-}
+import { generateEvents } from "../utils/intervals"
 
 export default function Calendar({ is24HourFormat = true }) {
 	const [events, setEvents] = useState(data)

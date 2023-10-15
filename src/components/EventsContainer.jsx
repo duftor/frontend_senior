@@ -1,7 +1,7 @@
 import React from "react"
 import EventsGroup from "./EventsGroup"
 import styled from "styled-components"
-import { timeStringToDecimal } from "../utils/time"
+import { convertEventIntoInterval, groupIntervals } from "../utils/intervals"
 
 // Colors for groups
 const colors = [
@@ -46,37 +46,6 @@ const colors = [
 		dark: "#19C22A",
 	},
 ]
-
-// Convert {start, duration} to {start, end}
-const convertEventIntoInterval = (event) => {
-	const start = timeStringToDecimal(event.start)
-	return {
-		id: event.id,
-		start,
-		end: start + event.duration / 60,
-	}
-}
-
-// Sorts by start ascending
-const sortIntervalsByStart = (intervals) => {
-	return intervals.slice().sort(({ start: s1 }, { start: s2 }) => s1 - s2)
-}
-
-// Split intervals into groups, which are independent of each other
-const groupIntervals = (intervals) => {
-	const groups = []
-	let latestIntervalEnd = -Infinity
-	for (const interval of sortIntervalsByStart(intervals)) {
-		const { start, end } = interval
-		// There is no overlap to previous intervals so create a new group
-		if (start >= latestIntervalEnd) {
-			groups.push([])
-		}
-		groups[groups.length - 1].push(interval)
-		latestIntervalEnd = Math.max(latestIntervalEnd, end)
-	}
-	return groups
-}
 
 export default function EventsContainer({ events, containingInterval }) {
 	const intervals = []
