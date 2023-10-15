@@ -19,7 +19,7 @@ export default function Event({
 			width={width}
 			colors={colors}
 		>
-			<Typo variant="body1">Id : {id}</Typo>
+			<Typo variant="body1">{id}</Typo>
 		</EventStyled>
 	)
 }
