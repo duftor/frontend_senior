@@ -8,7 +8,8 @@ import EventsContainer from "./EventsContainer"
 
 export default function Calendar({ is24HourFormat = true }) {
 	const [events, setEvents] = useState(data)
-	const hours = generateHours(9, 21)
+	const containingInterval = { start: 9, end: 21 }
+	const hours = generateHours(containingInterval.start, containingInterval.end)
 
 	return (
 		<CalendarStyled>
@@ -16,21 +17,112 @@ export default function Calendar({ is24HourFormat = true }) {
 				Test recrutement : Calendar
 			</Typo>
 			<div className="container">
-				<div className="time-scale">
+				<div className="days-header">
+					<div className="day-header">
+						<Typo variant="h6">Lundi</Typo>
+					</div>
+					<div className="day-header">
+						<Typo variant="h6">Mardi</Typo>
+					</div>
+					<div className="day-header">
+						<Typo variant="h6">Mercredi</Typo>
+					</div>
+					<div className="day-header">
+						<Typo variant="h6">Jeudi</Typo>
+					</div>
+					<div className="day-header">
+						<Typo variant="h6">Vendredi</Typo>
+					</div>
+					<div className="day-header">
+						<Typo variant="h6">Samedi</Typo>
+					</div>
+					<div className="day-header">
+						<Typo variant="h6">Dimanche</Typo>
+					</div>
+				</div>
+				<div className="calendar">
+					<div className="time-scale">
+						{hours.map((hour) => (
+							<Typo key={hour} className="scale-hour">
+								{is24HourFormat
+									? `${decimalToTime(hour)}`
+									: `${decimalToTime(hour % 12)} ${hour < 12 ? "am" : "pm"}`}
+							</Typo>
+						))}
+					</div>
+					<div className="calendar-days">
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+					</div>
+				</div>
+				{/* <div className="time-scale">
 					{hours.map((hour) => (
-						<div key={hour} className="hour">
+						<Typo key={hour} className="hour">
 							{is24HourFormat
 								? `${decimalToTime(hour)}`
 								: `${decimalToTime(hour % 12)} ${hour < 12 ? "am" : "pm"}`}
-						</div>
+						</Typo>
 					))}
 				</div>
 				<div className="days-container">
 					<div className="day">
-						<div className="day-header"></div>
+						<div className="day-header">
+							<Typo variant="h6">Lundi</Typo>
+						</div>
+						<div className="day-content">
+							<EventsContainer
+								events={events}
+								containingInterval={containingInterval}
+							/>
+						</div>
+					</div>
+					<div className="day">
+						<div className="day-header">
+							<Typo variant="h6">Mardi</Typo>
+						</div>
 						<div className="day-content"></div>
 					</div>
-				</div>
+				</div> */}
 			</div>
 
 			{/* <div className="container">
@@ -91,12 +183,52 @@ const CalendarStyled = styled.div`
 	}
 
 	.container {
-		/* border: 1px solid red; */
 		height: 100%;
 		display: flex;
+		flex-direction: column;
 		padding: 12px;
 
-		.time-scale {
+		.days-header {
+			display: flex;
+			justify-content: space-between;
+			padding-left: 57.244px;
+			gap: 12px;
+
+			.day-header {
+				flex: 1;
+				text-align: center;
+			}
+		}
+
+		.calendar {
+			display: flex;
+			flex: 1;
+
+			.time-scale {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+
+				.scale-hour {
+					text-align: right;
+					padding-right: 12px;
+				}
+			}
+
+			.calendar-days {
+				flex: 1;
+				display: flex;
+				justify-content: space-between;
+				gap: 12px;
+
+				.day-content {
+					flex: 1;
+					position: relative;
+				}
+			}
+		}
+
+		/* .time-scale {
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
@@ -107,10 +239,31 @@ const CalendarStyled = styled.div`
 				padding-right: 5px;
 			}
 		}
+
 		.days-container {
 			border: 1px solid blue;
 			flex: 1;
-		}
+			display: flex;
+			gap: 12px;
+
+			.day {
+				background: red;
+				width: 100%;
+				height: 100%;
+
+				.day-header {
+					padding: 4px;
+					text-align: center;
+				}
+
+				.day-content {
+					position: relative;
+					height: 100%;
+					flex: 1;
+					height: 100%;
+				}
+			}
+		} */
 	}
 
 	/* .container {
