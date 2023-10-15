@@ -68,13 +68,17 @@ function makeBoxes(columns, containingInterval) {
 	}
 }
 
-export default function GroupEvents({ events, groupColors }) {
+export default function EventsGroup({
+	events,
+	groupColors,
+	containingInterval,
+}) {
 	const columns = putIntervalsIntoColumns(events)
 
-	const boxes = makeBoxes(columns, { start: 9, end: 21 })
+	const boxes = makeBoxes(columns, containingInterval)
 
 	return (
-		<GroupEventsStyled>
+		<EventsGroupStyled>
 			{boxes.map(({ id, top, left, height, width }) => (
 				<Event
 					key={id}
@@ -86,8 +90,8 @@ export default function GroupEvents({ events, groupColors }) {
 					width={width}
 				/>
 			))}
-		</GroupEventsStyled>
+		</EventsGroupStyled>
 	)
 }
 
-const GroupEventsStyled = styled.div``
+const EventsGroupStyled = styled.div``
