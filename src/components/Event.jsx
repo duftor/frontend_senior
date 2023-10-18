@@ -19,7 +19,9 @@ export default function Event({
 			width={width}
 			colors={colors}
 		>
-			<Typo variant="body1">{id}</Typo>
+			<Typo variant="body1" color={colors.dark}>
+				{id}
+			</Typo>
 		</EventStyled>
 	)
 }
@@ -42,4 +44,11 @@ const EventStyled = styled.div`
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+
+	&:hover {
+		z-index: 1;
+		transform: scale(1.15);
+		/* box-shadow: ${({ colors }) => colors.dark} 0px 0px 8px 0px; */
+		/* filter: drop-shadow(0 0 0.5rem ${({ colors }) => colors.dark}); */
+	}
 `
