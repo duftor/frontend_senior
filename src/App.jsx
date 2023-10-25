@@ -15,7 +15,9 @@ const AppStyled = styled.div`
 	background-color: #f7f7f7;
 	width: 100vw;
 	height: 100vh;
+	min-width: 700px;
+	min-height: 430px;
 
 	box-sizing: border-box;
-	padding: 40px;
+	padding: 5vh 5vw;
 `

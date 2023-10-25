@@ -1,9 +1,14 @@
 import React from "react"
 import styled, { css } from "styled-components"
 
-export default function Typo({ className, variant = "body1", children }) {
+export default function Typo({
+	className,
+	variant = "body1",
+	color = "black",
+	children,
+}) {
 	return (
-		<TypoStyled className={className} variant={variant}>
+		<TypoStyled className={className} variant={variant} color={color}>
 			{children}
 		</TypoStyled>
 	)
@@ -11,6 +16,8 @@ export default function Typo({ className, variant = "body1", children }) {
 
 const TypoStyled = styled.div`
 	font-family: "Roboto", sans-serif;
+	color: ${({ color }) => color.light};
+
 	${({ variant }) => typoStyle[variant]}
 `
 

@@ -2,97 +2,71 @@ import React from "react"
 import styled from "styled-components"
 import Typo from "./reusable-ui/Typo"
 import { decimalToTime, generateHours } from "../utils/time"
-import { useEffect } from "react"
 import { useState } from "react"
-import { useRef } from "react"
 import data from "../data/input.json"
+import EventsContainer from "./EventsContainer"
+import { generateEvents } from "../utils/intervals"
 
-// function debounce(fn, ms) {
-// 	let timer
-// 	return (_) => {
-// 		clearTimeout(timer)
-// 		timer = setTimeout((_) => {
-// 			timer = null
-// 			fn.apply(this, arguments)
-// 		}, ms)
-// 	}
-// }
+const daysFR = [
+	"Lundi",
+	"Mardi",
+	"Mercredi",
+	"Jeudi",
+	"Vendredi",
+	"Samedi",
+	"Dimanche",
+]
 
-export default function Calendar() {
-	// const [dimensions, setDimensions] = useState({
-	// 	height: window.innerHeight,
-	// 	width: window.innerWidth,
-	// })
+export default function Calendar({ is24HourFormat = true }) {
+	const [events, setEvents] = useState(data)
+	const containingInterval = { start: 9, end: 21 }
+	const hours = generateHours(containingInterval.start, containingInterval.end)
 
-	const hours = generateHours(9, 21)
-
-	// useEffect(() => {
-	// 	const debouncedHandleResize = debounce(function handleResize() {
-	// 		setDimensions({
-	// 			height: window.innerHeight,
-	// 			width: window.innerWidth,
-	// 		})
-	// 	}, 1000)
-
-	// 	window.addEventListener("resize", debouncedHandleResize)
-
-	// 	return (_) => {
-	// 		window.removeEventListener("resize", debouncedHandleResize)
-	// 	}
-	// }, [])
-
-	const dayRef = useRef(null)
-	const [dimensions, setDimensions] = useState({ height: 0, width: 0 })
-
-	useEffect(() => {
-		setDimensions({
-			height: dayRef.current.offsetHeight,
-			width: dayRef.current.offsetWidth,
-		})
-	}, [])
+	const eventsProperties = {
+		count: 17, // Intervals to generate
+		maxStart: 9, // Start hour
+		maxEnd: 21, // End hour
+		minLength: 15, // Interval min length (minutes)
+		maxLength: 120, // Interval max length (minutes)
+		segments: 4, // Hour divider for events' hour
+	}
 
 	return (
 		<CalendarStyled>
-			<Typo className="title" variant="h3">
+			<Typo className="header" variant="h3">
 				Test recrutement : Calendar
 			</Typo>
 			<div className="container">
-				<div className="time-scale">
-					{hours.map((hour) => (
-						<div key={hour} className="hour">
-							{decimalToTime(hour % 12)} {hour < 12 ? "am" : "pm"}
+				<div className="days-header">
+					{daysFR.map((day) => (
+						<div key={day + "-header"} className="day-header">
+							<Typo variant="h6">{day}</Typo>
 						</div>
 					))}
 				</div>
 				<div className="calendar">
-					<div className="day" ref={dayRef}>
-						<Typo variant="body1">
-							Lundi <br />{" "}
-							<div>
-								{dimensions.width} x {dimensions.height}
+					<div className="time-scale">
+						{hours.map((hour) => (
+							<Typo key={hour} className="scale-hour">
+								{is24HourFormat
+									? `${decimalToTime(hour)}`
+									: `${decimalToTime(hour % 12)} ${hour < 12 ? "am" : "pm"}`}
+							</Typo>
+						))}
+					</div>
+					<div className="calendar-days">
+						{daysFR.map((day) => (
+							<div key={day + "-content"} className="day-content">
+								<EventsContainer
+									events={
+										day === daysFR[0]
+											? events
+											: generateEvents(eventsProperties)
+									}
+									containingInterval={containingInterval}
+								/>
 							</div>
-							{/* <div>
-								Rendered at {dimensions.width} x {dimensions.height}
-							</div> */}
-						</Typo>
-					</div>
-					<div className="day">
-						<Typo variant="body1">Mardi</Typo>
-					</div>
-					<div className="day">
-						<Typo variant="body1">Mercredi</Typo>
-					</div>
-					<div className="day">
-						<Typo variant="body1">Jeudi</Typo>
-					</div>
-					<div className="day">
-						<Typo variant="body1">Vendredi</Typo>
-					</div>
-					<div className="day">
-						<Typo variant="body1">Samedi</Typo>
-					</div>
-					<div className="day">
-						<Typo variant="body1">Dimanche</Typo>
+						))}
 					</div>
 				</div>
 			</div>
@@ -111,52 +85,56 @@ const CalendarStyled = styled.div`
 	border-radius: 4px;
 	box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.05);
 
-	.title {
+	.header {
 		padding-top: 12px;
 		display: flex;
 		justify-content: center;
 	}
 
 	.container {
-		display: flex;
-		padding: 24px 24px 24px 0;
-
-		flex: 1 1 auto;
-	}
-
-	.time-scale {
+		height: 100%;
 		display: flex;
 		flex-direction: column;
-
-		/* background: blue; */
-		flex: 0 1 auto;
-		text-align: right;
-		justify-content: space-between;
 		padding: 12px;
 
-		.hour {
-			flex: 1;
+		.days-header {
 			display: flex;
-			/* align-items: center; */
-			justify-content: right;
-			padding-top: 12px;
+			justify-content: space-between;
+			padding-left: 57.244px;
+			gap: 12px;
+
+			.day-header {
+				flex: 1;
+				text-align: center;
+			}
 		}
-	}
 
-	.calendar {
-		display: flex;
-		flex: 1 1 auto;
-
-		justify-content: space-between;
-		gap: 12px;
-
-		.day {
-			/* background: red; */
-			border: 1px solid black;
-			flex: 1;
+		.calendar {
 			display: flex;
-			text-align: center;
-			justify-content: center;
+			flex: 1;
+
+			.time-scale {
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+
+				.scale-hour {
+					text-align: right;
+					padding-right: 12px;
+				}
+			}
+
+			.calendar-days {
+				flex: 1;
+				display: flex;
+				justify-content: space-between;
+				gap: 12px;
+
+				.day-content {
+					flex: 1;
+					position: relative;
+				}
+			}
 		}
 	}
 `
